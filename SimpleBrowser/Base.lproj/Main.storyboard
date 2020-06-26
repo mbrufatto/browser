@@ -21,7 +21,9 @@
                             </searchBar>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T8g-T9-FHm">
                                 <rect key="frame" x="0.0" y="813" width="414" height="49"/>
-                                <items/>
+                                <items>
+                                    <barButtonItem title="Item" image="arrow.left" catalog="system" id="FsT-Js-JNv"/>
+                                </items>
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -64,4 +66,7 @@
             <point key="canvasLocation" x="137.68115942028987" y="137.94642857142856"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="arrow.left" catalog="system" width="128" height="98"/>
+    </resources>
 </document>

@@ -35,6 +35,27 @@ class BrowserViewController: UIViewController {
         let url = URL(string: urlString)!
         webView.load(URLRequest(url: url))
         webView.allowsBackForwardNavigationGestures = true
+        
+        let backButton = UIBarButtonItem(
+            image: UIImage(systemName: "arrow.left")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
+            style: .plain,
+            target: self.webView,
+            action: #selector(WKWebView.goBack))
+        let forwardButton = UIBarButtonItem(
+            image: UIImage(systemName: "arrow.right")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
+            style: .plain,
+            target: self.webView,
+            action: #selector(WKWebView.goForward))
+        let reloadButton = UIBarButtonItem(
+                   image: UIImage(systemName: "arrow.counterclockwise")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
+                   style: .plain,
+                   target: self.webView,
+                   action: #selector(WKWebView.reload))
+        
+        self.toolBar.items = [backButton, forwardButton,
+                             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+                             reloadButton
+        ]
     }
 
     private func addWebView() {
