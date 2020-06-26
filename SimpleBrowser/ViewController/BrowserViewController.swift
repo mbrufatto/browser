@@ -113,6 +113,7 @@ class BrowserViewController: UIViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         let destination = storyboard.instantiateViewController(withIdentifier: "ListSiteViewController") as! ListSiteViewController
         destination.browserViewModel = self.browserViewModel
+        destination.delegate = self
         self.present(destination, animated: true)
     }
     
@@ -159,5 +160,13 @@ extension BrowserViewController: UISearchBarDelegate {
         
         guard let browserModel = browserViewModel else { return }
         browserModel.addWebSite(url.absoluteString)
+    }
+}
+
+extension BrowserViewController: ListSiteViewControllerDelegate {
+    
+    func didSelecetWebSite(website: String) {
+        guard let url = URL(string: website) else { return }
+        self.webView.load(URLRequest(url: url))
     }
 }

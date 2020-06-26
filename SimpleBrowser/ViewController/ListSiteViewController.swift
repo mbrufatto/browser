@@ -8,16 +8,23 @@
 
 import UIKit
 
+protocol ListSiteViewControllerDelegate {
+    func didSelecetWebSite(website: String)
+}
+
 class ListSiteViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
     var browserViewModel: BrowserViewModelProtocol?
     
+    var delegate: ListSiteViewControllerDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.dataSource = self
+        tableView.delegate = self
     }
     
     @IBAction func closeTapped() {
@@ -48,3 +55,12 @@ extension ListSiteViewController: UITableViewDataSource {
         return cell
     }
 }
+
+extension ListSiteViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        dismiss(animated: true, completion: nil)
+        delegate?.didSelecetWebSite(website: (browserViewModel?.retrieveWebSite(indexPath.row))!)
+    }
+}
+
