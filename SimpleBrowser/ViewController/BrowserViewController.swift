@@ -18,6 +18,7 @@ class BrowserViewController: UIViewController {
     private var backButton: UIBarButtonItem?
     private var forwardButton: UIBarButtonItem?
     private var progressBar: UIProgressView?
+    private var browserViewModel: BrowserViewModelProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +29,7 @@ class BrowserViewController: UIViewController {
     }
     
     private func initialSetup() {
+        browserViewModel = BrowserViewModel()
         webView = WKWebView()
         webView.navigationDelegate = self
         self.view.addSubview(webView)
@@ -41,23 +43,32 @@ class BrowserViewController: UIViewController {
         webView.allowsBackForwardNavigationGestures = true
         
         let backButton = UIBarButtonItem(
-            image: UIImage(systemName: "arrow.left")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
-            style: .plain,
-            target: self.webView,
-            action: #selector(WKWebView.goBack))
+                    image: UIImage(systemName: "arrow.left")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
+                    style: .plain,
+                    target: self.webView,
+                    action: #selector(WKWebView.goBack))
+        
         let forwardButton = UIBarButtonItem(
-            image: UIImage(systemName: "arrow.right")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
-            style: .plain,
-            target: self.webView,
-            action: #selector(WKWebView.goForward))
+                    image: UIImage(systemName: "arrow.right")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
+                    style: .plain,
+                    target: self.webView,
+                    action: #selector(WKWebView.goForward))
+        
+        let historyButton = UIBarButtonItem(
+                    image: UIImage(systemName: "book")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
+                    style: .plain,
+                    target: self,
+                    action: #selector(openHistory))
+        
         let reloadButton = UIBarButtonItem(
-                   image: UIImage(systemName: "arrow.counterclockwise")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
-                   style: .plain,
-                   target: self.webView,
-                   action: #selector(WKWebView.reload))
+                    image: UIImage(systemName: "arrow.counterclockwise")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
+                    style: .plain,
+                    target: self.webView,
+                    action: #selector(WKWebView.reload))
         
         self.toolBar.items = [backButton, forwardButton,
                              UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+                             historyButton,
                              reloadButton
         ]
         
@@ -96,6 +107,13 @@ class BrowserViewController: UIViewController {
         progressView.sizeToFit()
 
         self.webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
+    }
+    
+    @objc private func openHistory() {
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let destination = storyboard.instantiateViewController(withIdentifier: "ListSiteViewController") as! ListSiteViewController
+        destination.browserViewModel = self.browserViewModel
+        self.present(destination, animated: true)
     }
     
     //MARK: Observers
@@ -138,5 +156,8 @@ extension BrowserViewController: UISearchBarDelegate {
         
         guard let url = URL(string: "https://" + searchBar.text!) else { return }
         self.webView.load(URLRequest(url: url))
+        
+        guard let browserModel = browserViewModel else { return }
+        browserModel.addWebSite(url.absoluteString)
     }
 }
