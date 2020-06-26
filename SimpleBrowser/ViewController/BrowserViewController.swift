@@ -17,19 +17,14 @@ class BrowserViewController: UIViewController {
     private var webView: WKWebView!
     private var backButton: UIBarButtonItem?
     private var forwardButton: UIBarButtonItem?
+    private var progressBar: UIProgressView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         initialSetup()
-        addWebView()
-        
-        self.backButton?.isEnabled = self.webView.canGoBack
-        self.forwardButton?.isEnabled = self.webView.canGoForward
-        
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.canGoBack), options: .new, context: nil)
-        
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.canGoForward), options: .new, context: nil)
+        addProgressBar()
+        addAnchor()
     }
     
     private func initialSetup() {
@@ -68,17 +63,39 @@ class BrowserViewController: UIViewController {
         
         self.backButton = backButton
         self.forwardButton = forwardButton
+        
+        self.backButton?.isEnabled = self.webView.canGoBack
+        self.forwardButton?.isEnabled = self.webView.canGoForward
+        
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.canGoBack), options: .new, context: nil)
+        
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.canGoForward), options: .new, context: nil)
     }
 
-    private func addWebView() {
+    private func addAnchor() {
         self.webView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            self.webView.topAnchor.constraint(equalTo: self.urlAddress.bottomAnchor),
+            self.progressBar!.topAnchor.constraint(equalTo: self.urlAddress.bottomAnchor),
+            self.progressBar!.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            self.progressBar!.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            
+            self.webView.topAnchor.constraint(equalTo: self.progressBar!.bottomAnchor),
             self.webView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             self.webView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            self.webView.bottomAnchor.constraint(equalTo: self.toolBar.topAnchor)
+            self.webView.bottomAnchor.constraint(equalTo: self.toolBar.topAnchor),
         ])
+    }
+    
+    private func addProgressBar() {
+        let progressView = UIProgressView(progressViewStyle: .default)
+        self.progressBar = progressView
+        self.view.addSubview(progressView)
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        progressView.setProgress(0.0, animated: true)
+        progressView.sizeToFit()
+
+        self.webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
     }
     
     //MARK: Observers
@@ -88,6 +105,20 @@ class BrowserViewController: UIViewController {
             self.backButton?.isEnabled = self.webView.canGoBack
         } else if keyPath == "canGoForward" {
             self.forwardButton?.isEnabled = self.webView.canGoForward
+        } else if keyPath == "estimatedProgress", let progressView = self.progressBar {
+            let newProgress = self.webView.estimatedProgress
+            if Float(newProgress) > progressView.progress {
+                progressView.setProgress(Float(newProgress), animated: true)
+            } else {
+                progressView.setProgress(Float(newProgress), animated: false)
+            }
+            if newProgress >= 1 {
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+                    progressView.isHidden = true
+                })
+            } else {
+                progressView.isHidden = false
+            }
         }
     }
 }
