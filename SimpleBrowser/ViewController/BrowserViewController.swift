@@ -14,13 +14,22 @@ class BrowserViewController: UIViewController {
     @IBOutlet weak var urlAddress: UISearchBar!
     @IBOutlet weak var toolBar: UIToolbar!
     
-    var webView: WKWebView!
+    private var webView: WKWebView!
+    private var backButton: UIBarButtonItem?
+    private var forwardButton: UIBarButtonItem?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         initialSetup()
         addWebView()
+        
+        self.backButton?.isEnabled = self.webView.canGoBack
+        self.forwardButton?.isEnabled = self.webView.canGoForward
+        
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.canGoBack), options: .new, context: nil)
+        
+        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.canGoForward), options: .new, context: nil)
     }
     
     private func initialSetup() {
@@ -56,6 +65,9 @@ class BrowserViewController: UIViewController {
                              UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
                              reloadButton
         ]
+        
+        self.backButton = backButton
+        self.forwardButton = forwardButton
     }
 
     private func addWebView() {
@@ -67,6 +79,16 @@ class BrowserViewController: UIViewController {
             self.webView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             self.webView.bottomAnchor.constraint(equalTo: self.toolBar.topAnchor)
         ])
+    }
+    
+    //MARK: Observers
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "canGoBack" {
+            self.backButton?.isEnabled = self.webView.canGoBack
+        } else if keyPath == "canGoForward" {
+            self.forwardButton?.isEnabled = self.webView.canGoForward
+        }
     }
 }
 
