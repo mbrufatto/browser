@@ -28,6 +28,8 @@ class BrowserViewController: UIViewController {
         webView.navigationDelegate = self
         self.view.addSubview(webView)
         
+        urlAddress.delegate = self
+        
         let urlString = "https://www.apple.com.br"
         self.urlAddress.text = urlString
         let url = URL(string: urlString)!
@@ -52,5 +54,15 @@ extension BrowserViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         title = webView.title
         self.urlAddress.text = webView.url?.absoluteString
+    }
+}
+
+extension BrowserViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        
+        guard let url = URL(string: "https://" + searchBar.text!) else { return }
+        self.webView.load(URLRequest(url: url))
     }
 }
