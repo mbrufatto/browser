@@ -7,17 +7,39 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Browser View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="SimpleBrowser" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="BrowserViewController" customModule="SimpleBrowser" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <searchBar contentMode="redraw" searchBarStyle="minimal" translatesAutoresizingMaskIntoConstraints="NO" id="3im-Oq-g1i">
+                                <rect key="frame" x="0.0" y="88" width="414" height="56"/>
+                                <textInputTraits key="textInputTraits" keyboardType="URL" returnKeyType="go"/>
+                            </searchBar>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T8g-T9-FHm">
+                                <rect key="frame" x="0.0" y="813" width="414" height="49"/>
+                                <items/>
+                            </toolbar>
+                        </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="T8g-T9-FHm" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Ph4-zQ-bC4"/>
+                            <constraint firstItem="3im-Oq-g1i" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="QBh-0X-Bz3"/>
+                            <constraint firstItem="T8g-T9-FHm" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="VqC-BQ-nI5"/>
+                            <constraint firstItem="3im-Oq-g1i" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="czN-Qd-ykD"/>
+                            <constraint firstItem="T8g-T9-FHm" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="m8I-XB-gD6"/>
+                            <constraint firstItem="3im-Oq-g1i" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="m8O-eB-93k"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="8zZ-NA-J6C"/>
+                    <connections>
+                        <outlet property="toolBar" destination="T8g-T9-FHm" id="WMq-50-s0d"/>
+                        <outlet property="urlAddress" destination="3im-Oq-g1i" id="i1s-8n-9I2"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
