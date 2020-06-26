@@ -46,13 +46,13 @@ class BrowserViewController: UIViewController {
                     image: UIImage(systemName: "arrow.left")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
                     style: .plain,
                     target: self.webView,
-                    action: #selector(WKWebView.goBack))
+                    action: #selector(webView.goBack))
         
         let forwardButton = UIBarButtonItem(
                     image: UIImage(systemName: "arrow.right")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
                     style: .plain,
                     target: self.webView,
-                    action: #selector(WKWebView.goForward))
+                    action: #selector(webView.goForward))
         
         let historyButton = UIBarButtonItem(
                     image: UIImage(systemName: "book")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
@@ -64,7 +64,7 @@ class BrowserViewController: UIViewController {
                     image: UIImage(systemName: "arrow.counterclockwise")!.withTintColor(.blue, renderingMode: .alwaysTemplate),
                     style: .plain,
                     target: self.webView,
-                    action: #selector(WKWebView.reload))
+                    action: #selector(webView.reload))
         
         self.toolBar.items = [backButton, forwardButton,
                              UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
@@ -81,6 +81,8 @@ class BrowserViewController: UIViewController {
         webView.addObserver(self, forKeyPath: #keyPath(WKWebView.canGoBack), options: .new, context: nil)
         
         webView.addObserver(self, forKeyPath: #keyPath(WKWebView.canGoForward), options: .new, context: nil)
+        
+        urlAddress.autocapitalizationType = .none
     }
 
     private func addAnchor() {
@@ -147,6 +149,11 @@ extension BrowserViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         title = webView.title
         self.urlAddress.text = webView.url?.absoluteString
+    }
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Swift.Void) {
+        urlAddress.text = webView.url?.absoluteString
+        decisionHandler(.allow)
     }
 }
 

@@ -13,7 +13,9 @@ class BrowserViewModel: BrowserViewModelProtocol {
     private var webSites: [String] = []
     
     func addWebSite(_ webSite: String) {
-        webSites.append(webSite)
+        if !webSites.contains(webSite) {
+            webSites.append(webSite)
+        }
     }
     
     func retrieveWebSites() -> [String] {
